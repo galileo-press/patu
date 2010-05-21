@@ -27,7 +27,7 @@ class Response(object):
 
 class Patu(object):
 
-    def __init__(self, urls=[], spiders=1, spinner=True, verbose=False, depth=-1, input_file=None, generate=False):
+    def __init__(self, urls=[], spiders=1, spinner=True, verbose=False, depth=-1, input_file=None, generate=False, headers=None):
         # Set up the multiprocessing bits
         self.processes = []
         self.task_queue = Queue()
@@ -36,6 +36,7 @@ class Patu(object):
         self.queued_urls = {}
         self.seen_urls = set()
         self.spinner = Spinner()
+        self.headers = headers or {}
 
         # Generate the initial URLs, either from command-line, stdin, or file
         if input_file:
@@ -60,7 +61,7 @@ class Patu(object):
                     url = "http://" + url
                 # Follow initial redirects here to set self.constraints
                 try:
-                    resp, content = h.request(url)
+                    resp, content = h.request(url, headers=self.headers)
                     url = resp['content-location']
                 except:
                     # This URL is no good. Keep it in the queue to show the
@@ -94,7 +95,7 @@ class Patu(object):
         """
         links = []
         try:
-            resp, content = h.request(url)
+            resp, content = h.request(url, headers=self.headers)
             if self.input_file:
                 # Short-circuit if we got our list of links from a file
                 return Response(url, resp.status)
@@ -199,7 +200,7 @@ def main():
     for s, l, k in options_a:
         parser.add_option(s, l, **k)
     (options, args) = parser.parse_args()
-     # Submit first url
+    # Submit first url
     urls = [unicode(url) for url in args]
     kwargs = {
         'urls': urls,
