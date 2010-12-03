@@ -1,10 +1,15 @@
 from setuptools import setup
-import os
+import os, sys
 
 try:
     long_desc = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
 except (IOError, OSError):
     long_desc = ''
+
+dependencies = ['httplib2', 'lxml']
+# add multiprocessing for Python2.4/2.5
+if sys.version_info < (2, 6):
+    dependencies += ['multiprocessing']
 
 setup(
     name = "patu",
@@ -17,6 +22,6 @@ setup(
     entry_points = {
         'console_scripts': ['patu = patu:main']
     },
-    install_requires = ['httplib2', 'lxml', 'multiprocessing'],
+    install_requires = dependencies,
     py_modules = ['patu'],
 )
