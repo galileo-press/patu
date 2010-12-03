@@ -17,6 +17,6 @@ setup(
     entry_points = {
         'console_scripts': ['patu = patu:main']
     },
-    install_requires = ['httplib2', 'lxml'],
+    install_requires = ['httplib2', 'lxml', 'multiprocessing'],
     py_modules = ['patu'],
 )
